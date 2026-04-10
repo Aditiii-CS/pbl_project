@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Fake Face Detection</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      width: 400px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    .upload-box {
+      border: 2px dashed #3b82f6;
+      padding: 30px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .upload-box:hover {
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    input {
+      display: none;
+    }
+
+    .preview {
+      margin-top: 15px;
+    }
+
+    .preview img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #3b82f6;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .loader {
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 15px auto;
+      display: none;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>AI Fake Face Detection</h1>
+    <p>Upload an image to detect if it's Real or AI-generated</p>
+
+    <label class="upload-box" for="fileInput">
+      Click or Drag Image
+    </label>
+    <input type="file" id="fileInput" accept="image/*" />
+
+    <div class="preview" id="preview"></div>
+
+    <button onclick="uploadImage()">Analyze</button>
+
+    <div class="loader" id="loader"></div>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById("fileInput");
+    const preview = document.getElementById("preview");
+
+    input.addEventListener("change", () => {
+      const file = input.files[0];
+      preview.innerHTML = "";
+
+      if (file) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        preview.appendChild(img);
+      }
+    });
+
+    async function uploadImage() {
+      const file = input.files[0];
+      if (!file) {
+        alert("Please select an image");
+        return;
+      }
+
+      const loader = document.getElementById("loader");
+      const result = document.getElementById("result");
+
+      loader.style.display = "block";
+      result.innerText = "";
+
+      let formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        let response = await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          body: formData
+        });
+
+        let data = await response.json();
+
+        loader.style.display = "none";
+        result.innerText = "Result: " + data.result;
+
+      } catch (error) {
+        loader.style.display = "none";
+        result.innerText = "Error connecting to server";
+      }
+    }
+  </script>
+
+</body>
+</html>
