@@ -1,20 +1,5 @@
-# AI-Based Fake Face Detection System
+## Problem Statement
+With the rise of AI-generated faces (deepfakes), it has become difficult to distinguish real from fake images, leading to misinformation and security risks.
 
-## Project Description
-This project is an AI-based Fake Face Detection System developed as part of PBL.
-
-The system detects whether a face image is real or fake using deep learning techniques.
-
-## Technologies Used
-- Python
-- OpenCV
-- TensorFlow / CNN
-- Machine Learning
-
-## Features
-- Detects fake faces
-- Image processing
-- AI model-based prediction
-
-## Developed By
-Aditi kadam
+## Solution
+This project uses EfficientNet (deep learning) for classification and Grad-CAM for explainability to detect fake faces and highlight suspicious regions.
